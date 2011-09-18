@@ -1,0 +1,14 @@
+div:first-child > .comment
+{
+	font-weight: bold;
+	font-size: 200%;
+}
+#status
+{
+	position: fixed;
+	top: 97%;
+	height: 3%;
+	width: 100%;
+	background: white;
+	text-align: center;
+}
