@@ -49,7 +49,7 @@ function loop(match) {
 		res.on('end', function() {
 			cleanJSON = rawJSON.slice(22,-2);
 			commentary = JSON.parse(cleanJSON);
-			everyone.now[match.matchId] = commentary;
+			everyone.now.commentary = commentary;
 		});
 	});
 	setInterval(function(){
@@ -58,7 +58,7 @@ function loop(match) {
 		var end = match.kickoff + 7200000
 		//console.log( "now: " + now + " start: " + start + " end: " + end );
 		//console.log(match.matchId);
-		if ( now > start && now < end ) {
+		if ( now > start || now < end ) {
 			if ( commentary.Commentary_Events ) {
 				var prevLen = commentary.Commentary_Events.Event.length
 			} else {
@@ -80,7 +80,7 @@ function loop(match) {
 					}
 					//console.log("prevLen: " + prevLen + " newLen: " + newLen);
 					if ( newLen > prevLen ) {
-						everyone.now[match.matchId] = commentary;
+						everyone.now.commentary = commentary;
 						//console.log(everyone.now.commentary);
 						console.log("Sending commentary for " + match.matchId);
 						everyone.now.write();
