@@ -58,7 +58,7 @@ function loop(match) {
 		var end = match.kickoff + 7200000
 		//console.log( "now: " + now + " start: " + start + " end: " + end );
 		//console.log(match.matchId);
-		if ( now > start || now < end ) {
+		if ( now > start && now < end ) {
 			if ( commentary.Commentary_Events ) {
 				var prevLen = commentary.Commentary_Events.Event.length
 			} else {
