@@ -7,6 +7,18 @@ app.listen(80);
 var nowjs = require("now");
 var everyone = require("now").initialize(app);
 
+var winston = require('winston');
+var logger = new (winston.Logger)({
+	transports: [
+		new (winston.transports.Console)(),
+		new (winston.transports.File)({ filename: 'wtfref.log' })
+	],
+	exceptionHandlers: [
+		new (winston.transports.File)({ filename: 'exceptions.log'})
+	]
+});
+
+logger.handleExceptions();
 var matches = [ 
 	{
 		matchId: 'RWC20110119',
