@@ -13,6 +13,10 @@ everyone.now.logStuff = function(msg){
 
 var matches = [ 
 	{
+		matchId: 'RWC20110119',
+		kickoff: 1316503800000
+	},
+	{
 		matchId: 'RWC20110120',
 		kickoff: 1316503800000
 	},
@@ -30,11 +34,15 @@ var matches = [
 	}
 ]
 
+var matches = matches.reverse();
+console.log(matches);
+
 for ( var i = 0; i < matches.length; i++ ) {
-	loop(matches[i]);
+	isEnded(matches[i]);
 }
 
-function loop(match) {
+function isEnded(match) {
+	console.log('Checking if ' + match.matchId + ' is ended');
 	var commentary = "";
 	var options = {
 		host: 'media.foxsports.com.au',
@@ -49,11 +57,30 @@ function loop(match) {
 		res.on('end', function() {
 			cleanJSON = rawJSON.slice(22,-2);
 			commentary = JSON.parse(cleanJSON);
-			everyone.now.commentary = commentary;
+			if ( commentary.Commentary_Events ) {
+				if ( commentary.Commentary_Events.Event[0].Event_Type === "Full Time" ) {
+					console.log("Match " + match.matchId + " has ended");
+					return;
+				} else {
+					console.log("Starting loop for match " + match.matchId);
+					everyone.now.commentary = commentary;
+					loop(match);
+				}
+			} else {
+				console.log("Starting loop for match " + match.matchId);
+				everyone.now.commentary = commentary;
+				loop(match);
+			}
 		});
 	});
-	setInterval(function(){
-		var now = (new Date()).getTime(); 
+};
+
+function loop(match) {
+	var looper = setInterval(function(){
+		var localNow = (new Date()).getTime();
+		var date = new Date();
+		var offset = date.getTimezoneOffset() * 60 * 1000;
+		var now = localNow + offset;
 		var start = match.kickoff - 1200000;
 		var end = match.kickoff + 7200000
 		//console.log( "now: " + now + " start: " + start + " end: " + end );
@@ -85,8 +112,15 @@ function loop(match) {
 						console.log("Sending commentary for " + match.matchId);
 						everyone.now.write();
 					}
+					if ( commentary.Commentary_Events ) {
+						if ( commentary.Commentary_Events.Event[commentary.Commentary_Events.Event.length - 1].Event_Type === "Full Time" ) {
+							console.log("Match " + match.matchId + " has ended");
+							clearTimeout(looper);
+							return;
+						}
+					}
 				});
 			});
 		};
-	}, 5000);
+	}, 1000);
 };
