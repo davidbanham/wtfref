@@ -2,7 +2,7 @@ var http = require('http');
 var express = require('express');
 var app = require('express').createServer();
 app.use(express.static(__dirname + '/public', { maxAge: 14 * 24 * 60 * 60 * 1000 }));
-app.listen(3000);
+app.listen(80);
 
 var nowjs = require("now");
 var everyone = require("now").initialize(app);
