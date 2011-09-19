@@ -43,14 +43,14 @@ var matches = [
 ]
 
 var matches = matches.reverse();
-console.log(matches);
+logger.info(matches);
 
 for ( var i = 0; i < matches.length; i++ ) {
 	isEnded(matches[i]);
 }
 
 function isEnded(match) {
-	console.log('Checking if ' + match.matchId + ' is ended');
+	logger.info('Checking if ' + match.matchId + ' is ended');
 	var commentary = "";
 	var options = {
 		host: 'media.foxsports.com.au',
@@ -67,15 +67,15 @@ function isEnded(match) {
 			commentary = JSON.parse(cleanJSON);
 			if ( commentary.Commentary_Events ) {
 				if ( commentary.Commentary_Events.Event[0].Event_Type === "Full Time" ) {
-					console.log("Match " + match.matchId + " has ended");
+					logger.info("Match " + match.matchId + " has ended");
 					return;
 				} else {
-					console.log("Starting loop for match " + match.matchId);
+					logger.info("Starting loop for match " + match.matchId);
 					everyone.now.commentary = commentary;
 					loop(match);
 				}
 			} else {
-				console.log("Starting loop for match " + match.matchId);
+				logger.info("Starting loop for match " + match.matchId);
 				everyone.now.commentary = commentary;
 				loop(match);
 			}
@@ -91,8 +91,8 @@ function loop(match) {
 		var now = localNow + offset;
 		var start = match.kickoff - 1200000;
 		var end = match.kickoff + 7200000
-		//console.log( "now: " + now + " start: " + start + " end: " + end );
-		//console.log(match.matchId);
+		//logger.info( "now: " + now + " start: " + start + " end: " + end );
+		//logger.info(match.matchId);
 		if ( now > start && now < end ) {
 			if ( commentary.Commentary_Events ) {
 				var prevLen = commentary.Commentary_Events.Event.length
@@ -113,16 +113,16 @@ function loop(match) {
 					} else {
 						var newLen = 0;
 					}
-					//console.log("prevLen: " + prevLen + " newLen: " + newLen);
+					//logger.info("prevLen: " + prevLen + " newLen: " + newLen);
 					if ( newLen > prevLen ) {
 						everyone.now.commentary = commentary;
-						//console.log(everyone.now.commentary);
-						console.log("Sending commentary for " + match.matchId);
+						//logger.info(everyone.now.commentary);
+						logger.info("Sending commentary for " + match.matchId);
 						everyone.now.write();
 					}
 					if ( commentary.Commentary_Events ) {
 						if ( commentary.Commentary_Events.Event[commentary.Commentary_Events.Event.length - 1].Event_Type === "Full Time" ) {
-							console.log("Match " + match.matchId + " has ended");
+							logger.info("Match " + match.matchId + " has ended");
 							clearTimeout(looper);
 							return;
 						}
