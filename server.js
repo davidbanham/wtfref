@@ -7,10 +7,6 @@ app.listen(80);
 var nowjs = require("now");
 var everyone = require("now").initialize(app);
 
-everyone.now.logStuff = function(msg){
-	console.log(msg);
-}
-
 var matches = [ 
 	{
 		matchId: 'RWC20110119',
